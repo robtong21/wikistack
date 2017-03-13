@@ -18,7 +18,11 @@ app.set('view engine', 'html');
 // when res.render works with html files, have it use nunjucks to do so
 app.engine('html', nunjucks.render);
 
-app.use('/', routes)
+app.use(bodyParser.urlencoded({extended: true})) // for the submit form
+app.use(bodyParser.json())
+
+app.use('/', routes)  // will /wiki routes hit this?
+
 
 models.User.sync({})
 .then(function() {
@@ -27,5 +31,6 @@ models.User.sync({})
 .then(function() {
     app.listen(3000, function() {
     console.log("Listening...")
+    });
 })
 .catch(console.error);

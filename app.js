@@ -24,9 +24,9 @@ app.use(bodyParser.json())
 app.use('/', routes)  // will /wiki routes hit this?
 
 
-models.User.sync({})
+models.User.sync()
 .then(function() {
-    return models.Page.sync({})
+    return models.Page.sync()
 })
 .then(function() {
     app.listen(3000, function() {

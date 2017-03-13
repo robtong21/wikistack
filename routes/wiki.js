@@ -4,6 +4,7 @@ const express = require('express');
 const router = express.Router();
 const models = require('../models');
 const Page = models.Page;
+const User = models.User;
 
 router.get('/', function(req, res){
     res.redirect('/');
@@ -15,17 +16,28 @@ router.post('/', function(req, res, next){
     const title = req.body.title;
     const content = req.body.content;
     const status = req.body.status;
-        console.log(req.body)
+    User.findOrCreate({
+        where:{
+        name,
+        email
+        }
+    })
+    .then(function(user){
+        let name = user[0];
+            let page = Page.build({   //creates  db instance of page, dosn't save
+            title: title,
+            content: content,
+            status: status
+            });
 
-        //Page.create() //returns promise
-    let page = Page.build({   //creates  db instance of page, dosn't save
-        title: title,
-        content: content,
-        status: status
-    });
-    page.save()
-    .then(function(obj){
-        res.redirect(obj.route);
+        return page.save().then(function(page){
+            return page.setAuthor(name);
+
+            })
+    })
+
+    .then(function(page){
+        res.redirect(page.route);
     })
     .catch(next)
 });
